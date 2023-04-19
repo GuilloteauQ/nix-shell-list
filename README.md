@@ -38,7 +38,7 @@ x86_64-linux:
 ## Add to registries
 
 ```sh
-nix registry nsl qorn github:GuilloteauQ/nix-shell-list
+nix registry add nsl github:GuilloteauQ/nix-shell-list
 ```
 
 and now you can call from `nsl`:
