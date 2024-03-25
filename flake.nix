@@ -5,32 +5,26 @@
   };
 
   outputs = { self, nixpkgs, utils }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-    in
-    {
-      apps.${system} = rec{
-        default = nsl;
-        nsl = {
-          type = "app";
-          program = "${self.packages.${system}.default}/bin/nsl";
+    utils.lib.eachDefaultSystem (system:
+      let pkgs = import nixpkgs { inherit system; };
+      in {
+        apps = rec {
+          default = nsl;
+          nsl = {
+            type = "app";
+            program = "${self.packages.${system}.default}/bin/nsl";
+          };
         };
-      };
-      packages.${system} = rec {
-        default = nix-shell-list;
-        nix-shell-list = pkgs.python3Packages.buildPythonPackage rec {
-          name = "nix-shell-list";
-          version = "0.0.1";
-          src = ./.;
-          propagatedBuildInputs = with (pkgs.python3Packages); [
-          ];
-          doCheck = false;
-        };      
-      };
-      devShells.${system}.default = with pkgs;
-        mkShell {
-          buildInputs = [ python3 ];
+        packages = rec {
+          default = nix-shell-list;
+          nix-shell-list = pkgs.python3Packages.buildPythonPackage rec {
+            name = "nix-shell-list";
+            version = "0.0.1";
+            src = ./.;
+            propagatedBuildInputs = with (pkgs.python3Packages); [ ];
+            doCheck = false;
+          };
         };
-    };
+        devShells.default = with pkgs; mkShell { buildInputs = [ python3 ]; };
+      });
 }
